@@ -1,6 +1,6 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 import type { Artist } from "@/types/Artists.types";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,6 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 export const transformTopArtists = (artists: Artist[]) => {
   return artists.map((artist) => ({
     name: artist.name,
-    playcount: artist.playcount,
+    playcount: artist.playcount
   }));
 };

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import UserForm from "./user-form";
 
 export function Home({ className, ...props }: React.ComponentProps<"div">) {
@@ -8,7 +8,7 @@ export function Home({ className, ...props }: React.ComponentProps<"div">) {
       <h1 className="text-center text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-500 via-blue-400 to-cyan-400 text-transparent bg-clip-text">
         Last.fm Better Stats
       </h1>
-      <Card className="overflow-hidden bg-muite">
+      <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="flex flex-col">
             <UserForm />

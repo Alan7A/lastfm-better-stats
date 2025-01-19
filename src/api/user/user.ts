@@ -5,7 +5,7 @@ import { type QueryClient, useQuery } from "@tanstack/react-query";
 export const getUser = async (username: string) => {
   const params = {
     method: "user.getInfo",
-    user: username,
+    user: username
   };
   const { data } = await axios.get<UserResponse>("/", { params });
 
@@ -15,7 +15,7 @@ export const getUser = async (username: string) => {
 export const useGetUser = (username: string) => {
   return useQuery({
     queryKey: ["user"],
-    queryFn: () => getUser(username),
+    queryFn: () => getUser(username)
   });
 };
 
@@ -26,6 +26,6 @@ export const prefetchUser = async (
 ) => {
   await queryClient.prefetchQuery({
     queryKey: ["user", username],
-    queryFn: () => getUser(username),
+    queryFn: () => getUser(username)
   });
 };

@@ -12,7 +12,7 @@ const User = (props: Props) => {
   const { user: username } = props;
   const { data: user } = useQuery({
     queryKey: ["user", username],
-    queryFn: () => getUser(username),
+    queryFn: () => getUser(username)
   });
 
   console.log(user);

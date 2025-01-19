@@ -1,23 +1,23 @@
 "use client";
 import { useGetTopArtists } from "@/api/top-artists";
-import type { Period } from "@/types/Common.types";
-import React, { useState } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
+import { transformTopArtists } from "@/lib/utils";
+import type { Period } from "@/types/Common.types";
+import { LoaderCircle, X } from "lucide-react";
+import React, { useState } from "react";
+import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
+  ChartTooltipContent
 } from "../ui/chart";
-import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
-import { transformTopArtists } from "@/lib/utils";
-import { LoaderCircle, X } from "lucide-react";
 
 interface Props {
   className?: string;
@@ -25,11 +25,11 @@ interface Props {
 
 const chartConfig = {
   name: {
-    label: "Name",
+    label: "Name"
   },
   playcount: {
-    label: "Play count",
-  },
+    label: "Play count"
+  }
 } satisfies ChartConfig;
 
 const TopArtists = (props: Props) => {
@@ -37,7 +37,7 @@ const TopArtists = (props: Props) => {
   const [period, setPeriod] = useState<Period>("7day");
   const { data: topArtists, isLoading } = useGetTopArtists({
     preiod: period,
-    limit: 10,
+    limit: 10
   });
   console.log(">>>", transformTopArtists(topArtists ?? []));
 
@@ -60,12 +60,12 @@ const TopArtists = (props: Props) => {
               <XAxis type="number" dataKey="playcount" hide />
               <YAxis hide dataKey="name" type="category" />
               <ChartTooltip cursor={true} content={<ChartTooltipContent />} />
-              <Bar dataKey="playcount" radius={8} className="fill-accent">
+              <Bar dataKey="playcount" radius={8} className="fill-chart-1">
                 <LabelList
                   dataKey="name"
                   position="insideLeft"
                   offset={12}
-                  className="fill-foreground"
+                  className="fill-primary-foreground"
                   fontSize={16}
                 />
                 <LabelList

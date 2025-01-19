@@ -5,7 +5,7 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarMenuItem
 } from "@/components/ui/sidebar";
 import {
   ArrowLeft,
@@ -13,18 +13,18 @@ import {
   ChartSpline,
   Disc,
   Music,
-  Users,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
-const items = [
+const getItems = (username: string) => [
   { title: "Home", href: "/", icon: ArrowLeft },
-  { title: "Overview", href: "/overview", icon: ChartSpline },
-  { title: "Artists", href: "/artists", icon: Users },
-  { title: "Albums", href: "/albums", icon: Disc },
-  { title: "Tracks", href: "/tracks", icon: Music },
-  { title: "Scrobbles", href: "/scrobbles", icon: BarChart2 },
+  { title: "Overview", href: `${"/overview"}"/overview"`, icon: ChartSpline },
+  { title: "Artists", href: `${"/artists"}"/artists"`, icon: Users },
+  { title: "Albums", href: `${"/albums"}"/albums"`, icon: Disc },
+  { title: "Tracks", href: `${"/tracks"}"/tracks"`, icon: Music },
+  { title: "Scrobbles", href: `${"/scrobbles"}"/scrobbles"`, icon: BarChart2 }
 ];
 const AppSidebar = () => {
   const pathname = usePathname();
@@ -34,13 +34,13 @@ const AppSidebar = () => {
       <SidebarHeader />
       <SidebarContent className="p-2">
         <SidebarMenu className="space-y-2">
-          {items.map((item) => {
+          {getItems(username).map((item) => {
             const { href, title } = item;
             const isActive = pathname.endsWith(href);
             return (
               <SidebarMenuItem key={title}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={title}>
-                  <Link href={`/${username}/${href}`} className="py-6">
+                  <Link href={href} className="py-6">
                     <div className="flex gap-6 text-lg items-center [collapsible=icon]:pl-6">
                       <item.icon className="h-5 w-5" />
                       <span>{title}</span>

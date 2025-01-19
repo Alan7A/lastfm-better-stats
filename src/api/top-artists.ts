@@ -17,7 +17,7 @@ export const getTopArtists = async (config: GetTopArtistsConfig) => {
     method: "user.getTopArtists",
     user: username,
     period: preiod,
-    limit: limit,
+    limit: limit
   };
   const { data } = await axios.get<TopsArtistsResponse>("/", { params });
 
@@ -30,6 +30,6 @@ export const useGetTopArtists = (
   const { username } = useParams<{ username: string }>();
   return useQuery({
     queryKey: ["topArtists", config],
-    queryFn: () => getTopArtists({ ...config, username }),
+    queryFn: () => getTopArtists({ ...config, username })
   });
 };

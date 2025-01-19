@@ -1,37 +1,37 @@
 import {
-  BarChart,
-  LineChart,
-  Line,
-  Bar,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { Clock, Disc, Heart, History, Music2, User } from "lucide-react";
-import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
+  ChartTooltipContent
 } from "@/components/ui/chart";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Clock, Disc, Heart, History, Music2, User } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis
+} from "recharts";
 
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "#2563eb",
+    color: "#2563eb"
   },
   mobile: {
     label: "Mobile",
-    color: "#60a5fa",
-  },
+    color: "#60a5fa"
+  }
 } satisfies ChartConfig;
 
 // Esta sería la data real que obtendrías de la API de Last.fm
@@ -41,7 +41,7 @@ const mockUserData = {
   artist_count: 1234,
   track_count: 8765,
   album_count: 2341,
-  register_date: "2019-03-15",
+  register_date: "2019-03-15"
 };
 
 const topArtists = [
@@ -54,7 +54,7 @@ const topArtists = [
   { name: "The Rolling Stones", plays: 543 },
   { name: "Bob Dylan", plays: 432 },
   { name: "The Who", plays: 321 },
-  { name: "The Doors", plays: 210 },
+  { name: "The Doors", plays: 210 }
 ];
 
 const topTracks = [
@@ -62,12 +62,12 @@ const topTracks = [
   { name: "Stairway to Heaven", artist: "Led Zeppelin", plays: 134 },
   { name: "Hey Jude", artist: "The Beatles", plays: 123 },
   { name: "Like a Rolling Stone", artist: "Bob Dylan", plays: 112 },
-  { name: "Light My Fire", artist: "The Doors", plays: 101 },
+  { name: "Light My Fire", artist: "The Doors", plays: 101 }
 ];
 
 const listeningHistory = Array.from({ length: 12 }, (_, i) => ({
   month: new Date(2023, i).toLocaleString("default", { month: "short" }),
-  scrobbles: Math.floor(Math.random() * 1000) + 500,
+  scrobbles: Math.floor(Math.random() * 1000) + 500
 }));
 
 export default function UserPage() {

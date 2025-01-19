@@ -1,16 +1,16 @@
 "use client";
+import { useGetUser } from "@/api/user/user";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { useParams } from "next/navigation";
 import { BarChart2, Disc, Music, User, Users } from "lucide-react";
-import { useGetUser } from "@/api/user/user";
+import { useParams } from "next/navigation";
 
 interface Props {
   className?: string;
@@ -30,7 +30,7 @@ const UserStats = (props: Props) => {
     artist_count,
     track_count,
     album_count,
-    registered,
+    registered
   } = user;
 
   return (

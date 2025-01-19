@@ -2,9 +2,9 @@ import { prefetchUser } from "@/api/user/user";
 import AppSidebar from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
-  dehydrate,
   HydrationBoundary,
   QueryClient,
+  dehydrate
 } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 
