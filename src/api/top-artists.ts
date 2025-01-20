@@ -1,27 +1,35 @@
 import { axios } from "@/axios";
-import type { TopsArtistsResponse } from "@/types/Artists.types";
-import type { Period } from "@/types/Common.types";
+import type { Artist, TopsArtistsResponse } from "@/types/Artists.types";
+import type { LastFmImage, Period } from "@/types/Common.types";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { SpotifyAPI } from "./spotify";
+
+const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || "";
+const clientSecret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET || "";
 
 interface GetTopArtistsConfig {
   username: string;
-  preiod: Period;
+  period: Period;
   limit?: number;
 }
 
 export const getTopArtists = async (config: GetTopArtistsConfig) => {
-  const { username, preiod, limit = 10 } = config;
+  const { username, period, limit = 10 } = config;
 
   const params = {
     method: "user.getTopArtists",
     user: username,
-    period: preiod,
+    period,
     limit: limit
   };
+
   const { data } = await axios.get<TopsArtistsResponse>("/", { params });
 
-  return data.topartists.artist;
+  const spotifyApi = new SpotifyAPI(clientId, clientSecret);
+  const transformedArtists = await transformLastFmArtists(data, spotifyApi);
+
+  return transformedArtists;
 };
 
 export const useGetTopArtists = (
@@ -33,3 +41,25 @@ export const useGetTopArtists = (
     queryFn: () => getTopArtists({ ...config, username })
   });
 };
+
+async function transformLastFmArtists(
+  lastFmData: TopsArtistsResponse,
+  spotifyApi: SpotifyAPI
+): Promise<Artist[]> {
+  const transformedArtists = await Promise.all(
+    lastFmData.topartists.artist.map(async (artist) => {
+      const images = await spotifyApi.searchArtist(artist.name);
+
+      if (!images) {
+        return artist;
+      }
+
+      return {
+        ...artist,
+        images
+      };
+    })
+  );
+
+  return transformedArtists;
+}

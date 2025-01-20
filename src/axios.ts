@@ -1,7 +1,7 @@
 import redaxios from "redaxios";
 
 const params = {
-  api_key: "f5ba663b649d64083f1838c060464515",
+  api_key: process.env.NEXT_PUBLIC_LASTFM_API_KEY,
   format: "json"
 };
 

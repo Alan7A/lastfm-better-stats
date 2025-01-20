@@ -1,3 +1,10 @@
+import type { LastFmImage } from "./Common.types";
+import type { SpotifyImage } from "./Spotify.types";
+
+export interface Artist extends Omit<LastFmArtist, "image"> {
+  images: SpotifyImage[];
+}
+
 export interface TopsArtistsResponse {
   topartists: TopArtists;
 }
@@ -15,9 +22,9 @@ export interface TopArtistsAttr {
   total: string;
 }
 
-export interface Artist {
+export interface LastFmArtist {
   streamable: string;
-  image: Image[];
+  image: LastFmImage[];
   mbid: string;
   url: string;
   playcount: string;
@@ -28,10 +35,3 @@ export interface Artist {
 export interface ArtistAttr {
   rank: string;
 }
-
-export interface Image {
-  size: Size;
-  "#text": string;
-}
-
-export type Size = "extralarge" | "large" | "medium" | "mega" | "small";

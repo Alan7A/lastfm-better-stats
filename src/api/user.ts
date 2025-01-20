@@ -14,7 +14,7 @@ export const getUser = async (username: string) => {
 
 export const useGetUser = (username: string) => {
   return useQuery({
-    queryKey: ["user"],
+    queryKey: ["user", username],
     queryFn: () => getUser(username)
   });
 };

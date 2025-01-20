@@ -1,3 +1,5 @@
+import type { LastFmImage } from "./Common.types";
+
 export interface User {
   name: string;
   age: string;
@@ -9,7 +11,7 @@ export interface User {
   playlists: string;
   track_count: string;
   album_count: string;
-  image: Image[];
+  image: LastFmImage[];
   registered: Registered;
   country: string;
   gender: string;
@@ -19,11 +21,6 @@ export interface User {
 
 export interface UserResponse {
   user: User;
-}
-
-export interface Image {
-  size: string;
-  "#text": string;
 }
 
 export interface Registered {

@@ -1,4 +1,4 @@
-import { prefetchUser } from "@/api/user/user";
+import { prefetchUser } from "@/api/user";
 import AppSidebar from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {

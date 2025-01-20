@@ -1,6 +1,6 @@
 "use client";
 
-import { getUser } from "@/api/user/user";
+import { getUser } from "@/api/user";
 import { useQuery } from "@tanstack/react-query";
 import UserPage from "./test";
 

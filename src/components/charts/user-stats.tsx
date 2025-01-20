@@ -1,5 +1,5 @@
 "use client";
-import { useGetUser } from "@/api/user/user";
+import { useGetUser } from "@/api/user";
 import {
   Card,
   CardContent,

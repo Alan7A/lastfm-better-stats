@@ -1,15 +1,14 @@
 import TopArtists from "@/components/charts/top-artists";
 import UserStats from "@/components/charts/user-stats";
+import OverviewTop from "@/components/overview-top";
 import React from "react";
 
 const OverviewPage = () => {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 xl:grid-cols-2">
       <UserStats />
-      <div className="lg:col-span-3">
-        <p className="text-2xl">Scrobbles (pending)</p>
-      </div>
-      <TopArtists className="lg:col-span-2" />
+      <TopArtists className="" />
+      <OverviewTop title="Top Artists" />
     </div>
   );
 };

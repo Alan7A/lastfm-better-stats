@@ -36,10 +36,9 @@ const TopArtists = (props: Props) => {
   const { className } = props;
   const [period, setPeriod] = useState<Period>("7day");
   const { data: topArtists, isLoading } = useGetTopArtists({
-    preiod: period,
+    period: period,
     limit: 10
   });
-  console.log(">>>", transformTopArtists(topArtists ?? []));
 
   return (
     <Card className={className}>
