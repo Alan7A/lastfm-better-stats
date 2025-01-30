@@ -1,5 +1,5 @@
 import { axios } from "@/axios";
-import type { Artist, TopsArtistsResponse } from "@/types/Artists.types";
+import type { Artist, TopArtistsResponse } from "@/types/Artists.types";
 import type { LastFmImage, Period } from "@/types/Common.types";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -24,7 +24,7 @@ export const getTopArtists = async (config: GetTopArtistsConfig) => {
     limit: limit
   };
 
-  const { data } = await axios.get<TopsArtistsResponse>("/", { params });
+  const { data } = await axios.get<TopArtistsResponse>("/", { params });
 
   const spotifyApi = new SpotifyAPI(clientId, clientSecret);
   const transformedArtists = await transformLastFmArtists(data, spotifyApi);
@@ -43,20 +43,28 @@ export const useGetTopArtists = (
 };
 
 async function transformLastFmArtists(
-  lastFmData: TopsArtistsResponse,
+  lastFmData: TopArtistsResponse,
   spotifyApi: SpotifyAPI
 ): Promise<Artist[]> {
   const transformedArtists = await Promise.all(
     lastFmData.topartists.artist.map(async (artist) => {
-      const images = await spotifyApi.searchArtist(artist.name);
+      const { image, ...rest } = artist;
+      const spotifyArtist = await spotifyApi.searchArtist(artist.name);
 
-      if (!images) {
+      if (!spotifyArtist) {
         return artist;
       }
 
+      const transformedImages: LastFmImage[] = spotifyArtist.images.map(
+        (image, i) => ({
+          size: i < 1 ? "medium" : i < 2 ? "large" : "extralarge",
+          "#text": image.url
+        })
+      );
+
       return {
-        ...artist,
-        images
+        ...rest,
+        image: transformedImages
       };
     })
   );

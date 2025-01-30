@@ -1,6 +1,6 @@
 import { prefetchUser } from "@/api/user";
 import AppSidebar from "@/components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import {
   HydrationBoundary,
   QueryClient,
@@ -24,7 +24,6 @@ export default async function Layout(props: Props) {
       <SidebarProvider>
         <AppSidebar />
         <main className="p-3 space-y-6 w-full">
-          <SidebarTrigger />
           <div>{children}</div>
         </main>
       </SidebarProvider>

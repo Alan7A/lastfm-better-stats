@@ -1,11 +1,6 @@
 import type { LastFmImage } from "./Common.types";
-import type { SpotifyImage } from "./Spotify.types";
 
-export interface Artist extends Omit<LastFmArtist, "image"> {
-  images: SpotifyImage[];
-}
-
-export interface TopsArtistsResponse {
+export interface TopArtistsResponse {
   topartists: TopArtists;
 }
 
@@ -22,7 +17,7 @@ export interface TopArtistsAttr {
   total: string;
 }
 
-export interface LastFmArtist {
+export interface Artist {
   streamable: string;
   image: LastFmImage[];
   mbid: string;

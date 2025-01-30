@@ -21,3 +21,27 @@ export interface SpotifyTokenResponse {
   token_type: string;
   expires_in: number;
 }
+
+export interface SpotifyTrack {
+  id: string;
+  name: string;
+  album: {
+    images: SpotifyImage[];
+    name: string;
+  };
+  artists: {
+    id: string;
+    name: string;
+  }[];
+  duration_ms: number;
+  external_urls: {
+    spotify: string;
+  };
+  preview_url: string | null;
+}
+
+export interface SpotifyTrackSearchResponse {
+  tracks: {
+    items: SpotifyTrack[];
+  };
+}
