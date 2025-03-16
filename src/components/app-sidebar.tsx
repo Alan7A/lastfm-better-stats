@@ -14,6 +14,7 @@ import {
   ChartSpline,
   Disc,
   Music,
+  PencilRuler,
   Users
 } from "lucide-react";
 import Link from "next/link";
@@ -25,7 +26,8 @@ const getItems = (username: string) => [
   { title: "Artists", href: `/${username}/artists`, icon: Users },
   { title: "Albums", href: `/${username}/albums`, icon: Disc },
   { title: "Tracks", href: `/${username}/tracks`, icon: Music },
-  { title: "Scrobbles", href: `/${username}/scrobbles`, icon: BarChart2 }
+  { title: "Scrobbles", href: `/${username}/scrobbles`, icon: BarChart2 },
+  { title: "Tools", href: `/${username}/tools`, icon: PencilRuler }
 ];
 const AppSidebar = () => {
   const pathname = usePathname();

@@ -21,3 +21,6 @@ export const getImageUrl = (
   const image = images.find((image) => image.size === size);
   return image ? image["#text"] : "";
 };
+
+export const wait = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

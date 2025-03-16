@@ -25,7 +25,6 @@ const UserForm = () => {
           required
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          autoComplete="username"
         />
       </div>
       <Button type="submit" className="w-full">

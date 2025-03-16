@@ -23,7 +23,8 @@
     "rules": {
       "recommended": true,
       "a11y": {
-        "useValidAnchor": "off"
+        "useValidAnchor": "off",
+        "useKeyWithClickEvents": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
@@ -31,6 +32,9 @@
       "correctness": {
         "noUnusedImports": "warn",
         "noUnusedVariables": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
       }
     }
   },

@@ -18,31 +18,35 @@ const ThreeImages = (props: Props) => {
   return (
     <div className="relative h-56 w-[400px] mx-auto mt-6">
       {/* Left */}
-      <Link
-        href={second.url}
-        target="_blank"
-        className={cn(
-          "top-4 hover:-translate-x-4 hover:-rotate-2 hover:scale-[1.25] hover:top-2 absolute h-40 w-40 rounded bg-cover bg-center shadow-xl transition duration-300",
-          shape === "circle" ? "rounded-full" : ""
-        )}
-        style={{
-          backgroundImage: `url(${getImageUrl(second.image)})`
-        }}
-        onMouseEnter={() => setHoverState("left")}
-        onMouseLeave={() => setHoverState(null)}
-      />
+      {second ? (
+        <Link
+          href={second.url}
+          target="_blank"
+          className={cn(
+            "top-4 hover:-translate-x-4 hover:-rotate-2 hover:scale-[1.25] hover:top-2 absolute h-40 w-40 rounded bg-cover bg-center shadow-xl transition duration-300",
+            shape === "circle" ? "rounded-full" : ""
+          )}
+          style={{
+            backgroundImage: `url(${getImageUrl(second.image)})`
+          }}
+          onMouseEnter={() => setHoverState("left")}
+          onMouseLeave={() => setHoverState(null)}
+        />
+      ) : null}
       {/* Right */}
-      <Link
-        href={third.url}
-        target="_blank"
-        className={cn(
-          "top-4 right-0 hover:translate-x-4 hover:rotate-2 hover:scale-[1.25] hover:top-2 absolute h-40 w-40 rounded bg-cover bg-center shadow-xl transition duration-300",
-          shape === "circle" ? "rounded-full" : ""
-        )}
-        style={{ backgroundImage: `url(${getImageUrl(third.image)})` }}
-        onMouseEnter={() => setHoverState("right")}
-        onMouseLeave={() => setHoverState(null)}
-      />
+      {third ? (
+        <Link
+          href={third.url}
+          target="_blank"
+          className={cn(
+            "top-4 right-0 hover:translate-x-4 hover:rotate-2 hover:scale-[1.25] hover:top-2 absolute h-40 w-40 rounded bg-cover bg-center shadow-xl transition duration-300",
+            shape === "circle" ? "rounded-full" : ""
+          )}
+          style={{ backgroundImage: `url(${getImageUrl(third.image)})` }}
+          onMouseEnter={() => setHoverState("right")}
+          onMouseLeave={() => setHoverState(null)}
+        />
+      ) : null}
       {/* Center */}
       <Link
         href={first.url}

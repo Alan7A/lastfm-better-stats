@@ -1,4 +1,5 @@
 "use client";
+import { useGetScrobbles } from "@/api/scrobbles";
 import { useGetUser } from "@/api/user";
 import {
   Card,
@@ -7,10 +8,10 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
+import { format, fromUnixTime } from "date-fns";
 import { BarChart2, Disc, Music, User, Users } from "lucide-react";
 import { useParams } from "next/navigation";
+import { ProgressIndicator } from "../ui/progress-indicator";
 
 interface Props {
   className?: string;
@@ -18,9 +19,9 @@ interface Props {
 
 const UserStats = (props: Props) => {
   const { className } = props;
-  dayjs.extend(localizedFormat);
   const { username } = useParams<{ username: string }>();
   const { data: user } = useGetUser(username);
+  const { calculateTimeRemaining, progress } = useGetScrobbles(user);
 
   if (!user) return <p>Loading...</p>;
 
@@ -41,7 +42,7 @@ const UserStats = (props: Props) => {
           {name}
         </CardTitle>
         <CardDescription>
-          Member since {dayjs(registered.unixtime).format("L")}
+          Member since {format(fromUnixTime(+registered.unixtime), "P")}
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -76,6 +77,14 @@ const UserStats = (props: Props) => {
             </div>
             <p className="text-2xl font-bold">{track_count.toLocaleString()}</p>
           </div>
+        </div>
+
+        <div className="space-y-6">
+          <ProgressIndicator
+            progress={progress}
+            totalScrobbles={+user.playcount || progress.currentPage * 1000}
+            timeRemaining={calculateTimeRemaining()}
+          />
         </div>
       </CardContent>
     </Card>
