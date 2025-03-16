@@ -1,7 +1,7 @@
+import crypto from "node:crypto";
 import { cookies } from "next/headers";
 // app/api/lastfm/scrobble/batch/route.ts
 import { type NextRequest, NextResponse } from "next/server";
-import { createApiSignature } from "../auth/lastfm/callback/route";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -112,4 +112,28 @@ async function scrobbleBatch(params: BatchScrobbleParams): Promise<any> {
   }
 
   return response.json();
+}
+
+function createApiSignature(params: Record<string, string>): string {
+  const LASTFM_API_SECRET = process.env.LASTFM_API_SECRET as string;
+  // Ordenar parámetros alfabéticamente
+  const sortedParams = Object.keys(params)
+    .sort()
+    .reduce(
+      (acc, key) => {
+        acc[key] = params[key];
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+  // Crear cadena para firmar
+  let signatureString = "";
+  for (const key in sortedParams) {
+    signatureString += key + sortedParams[key];
+  }
+  signatureString += LASTFM_API_SECRET;
+
+  // Generar firma MD5
+  return crypto.createHash("md5").update(signatureString).digest("hex");
 }

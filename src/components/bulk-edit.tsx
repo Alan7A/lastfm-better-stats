@@ -43,6 +43,8 @@ interface Props {
 
 // TODO:
 // - Guardar cookies en local storage y usar como default value
+// - El reset parece que no funciona
+// - Usar barra de progreso en vez de spinner
 // - Mejorar explicación sobre cómo obtener cookies
 // - Agregar botón para crear un scrobble de prueba para borrar y obtener cookies
 // - Implementar una lista de historial de edits con local storage

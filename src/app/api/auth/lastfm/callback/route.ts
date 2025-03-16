@@ -11,7 +11,6 @@ interface LastFMSessionResponse {
 }
 
 const LASTFM_API_KEY = process.env.NEXT_PUBLIC_LASTFM_API_KEY as string;
-const LASTFM_API_SECRET = process.env.LASTFM_API_SECRET as string;
 const LASTFM_API_URL = "https://ws.audioscrobbler.com/2.0/";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -77,7 +76,8 @@ async function getLastFMSession(
   return data.session;
 }
 
-export function createApiSignature(params: Record<string, string>): string {
+function createApiSignature(params: Record<string, string>): string {
+  const LASTFM_API_SECRET = process.env.LASTFM_API_SECRET as string;
   // Ordenar parámetros alfabéticamente
   const sortedParams = Object.keys(params)
     .sort()
