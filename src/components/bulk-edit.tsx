@@ -10,9 +10,8 @@ import {
 import type { Scrobble } from "@/types/Scrobbles.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Info } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -42,11 +41,9 @@ interface Props {
 }
 
 // TODO:
-// - Guardar cookies en local storage y usar como default value
 // - El reset parece que no funciona
 // - Usar barra de progreso en vez de spinner
 // - Mejorar explicación sobre cómo obtener cookies
-// - Agregar botón para crear un scrobble de prueba para borrar y obtener cookies
 // - Implementar una lista de historial de edits con local storage
 // - Tal vez mejorar el diseño general
 
@@ -66,10 +63,31 @@ const BulkEdit = (props: Props) => {
   const [tracksDialogOpen, setTracksDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { mutateAsync: editScrobbles, isPending } = useEditScrobbles();
+
+  // State to hold the cookies value, initialized to an empty string
+  const [storedCookies, setStoredCookies] = useState("");
+
+  // Use useEffect to get the cookies after the component has mounted
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Ensure we are in the browser environment
+      const cookies = localStorage.getItem("cookies") || "";
+      setStoredCookies(cookies);
+    }
+  }, []);
+
   const form = useForm<z.infer<typeof EditScrobblesSchema>>({
-    resolver: zodResolver(EditScrobblesSchema)
+    resolver: zodResolver(EditScrobblesSchema),
+    defaultValues: {
+      cookies: storedCookies // Use the state variable here
+    }
   });
-  const { handleSubmit, control, reset } = form;
+  const { handleSubmit, control, reset, setValue } = form;
+
+  // Update the form's cookies value when the storedCookies state changes
+  useEffect(() => {
+    setValue("cookies", storedCookies);
+  }, [storedCookies, setValue]);
 
   const handleTrackSelect = (track: Scrobble) => {
     setTracksDialogOpen(false);
@@ -84,10 +102,23 @@ const BulkEdit = (props: Props) => {
   };
 
   const onSubmit = async (data: z.infer<typeof EditScrobblesSchema>) => {
+    const { cookies } = data;
+    localStorage.setItem("cookies", cookies);
     await editScrobbles({ scrobbleInfo: data, username });
     reset();
     setEditDialogOpen(false);
     toast.success("Scrobbles edited successfully", {});
+  };
+
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST"
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   const unauthenticatedNode = (
@@ -124,14 +155,18 @@ const BulkEdit = (props: Props) => {
             </TooltipProvider>
           </div>
           {isAuthenticated && (
-            <div className="flex gap-2 text-sm text-muted-foreground font-normal">
+            <div className="flex gap-2 text-sm text-muted-foreground font-normal items-center">
               <p>
                 Logged in as <b>{username}</b>
               </p>
               <span>-</span>
-              <Link className="hover:underline" href="#">
+              <Button
+                className="text-foreground p-0"
+                variant="link"
+                onClick={logout}
+              >
                 Logout
-              </Link>
+              </Button>
             </div>
           )}
         </CardTitle>
@@ -239,6 +274,7 @@ const BulkEdit = (props: Props) => {
                   open={editDialogOpen}
                   setOpen={setEditDialogOpen}
                   isPending={isPending}
+                  username={username}
                 />
               </div>
             </form>
