@@ -19,7 +19,6 @@ export const useGetUser = (username: string) => {
   });
 };
 
-// TODO: Change to another file because this is not a hook
 export const prefetchUser = async (
   username: string,
   queryClient: QueryClient

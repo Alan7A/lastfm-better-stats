@@ -14,8 +14,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // TODO: Validar que el token sea válido
-
     // Construir la URL y los encabezados
     const urlUser = `${LASTFM_URL}${username}`;
     const url = `${urlUser}/library/delete`;

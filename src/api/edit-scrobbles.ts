@@ -51,9 +51,14 @@ const findScrobbles = async (params: EditScrobblesParams) => {
 const deleteScrobbles = async (params: DeleteScrobblesParams) => {
   const { scrobbles, username, cookies } = params;
 
-  for (const scrobble of scrobbles) {
-    await deleteScrobble(scrobble, username, cookies);
-    await wait(1000); // Rate limiting delay
+  try {
+    for (const scrobble of scrobbles) {
+      await deleteScrobble(scrobble, username, cookies);
+      await wait(1000); // Rate limiting delay
+    }
+  } catch (e) {
+    console.error("Error deleting scrobbles:", e);
+    throw e;
   }
 };
 
@@ -67,15 +72,9 @@ interface TransformedScrobble {
 // Crear srobbles nuevos con el mismo timestamp que el original
 export const createScrobbles = async (scrobbles: TransformedScrobble[]) => {
   try {
-    const { data } = await redaxios.post("/api/batch-scrobble", {
+    await redaxios.post("/api/batch-scrobble", {
       tracks: scrobbles
     });
-
-    if (data.success) {
-      console.log("Scrobbles created successfully:", data.response);
-    } else {
-      console.error("Error creating scrobbles:", data.error);
-    }
   } catch (error) {
     console.error("Error creating scrobbles:", error);
   }

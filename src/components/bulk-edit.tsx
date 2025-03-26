@@ -39,13 +39,55 @@ interface Props {
   isAuthenticated: boolean;
   username: string;
 }
+interface EditedScrobble extends z.infer<typeof EditScrobblesSchema> {
+  timestamp: number;
+}
+
+const STORAGE_KEY = "betterlastfmstats_edited_scrobbles";
+const COOKIES_KEY = "betterlastfmstats_cookies";
 
 // TODO:
 // - El reset parece que no funciona
 // - Usar barra de progreso en vez de spinner
 // - Mejorar explicación sobre cómo obtener cookies
-// - Implementar una lista de historial de edits con local storage
 // - Tal vez mejorar el diseño general
+
+const getEditedScrobbles = (): EditedScrobble[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Error reading edited scrobbles:", error);
+    return [];
+  }
+};
+
+const saveEditedScrobble = (scrobble: Omit<EditedScrobble, "timestamp">) => {
+  try {
+    const editedScrobbles = getEditedScrobbles();
+    const existingIndex = editedScrobbles.findIndex(
+      (item) =>
+        item.originalTrack === scrobble.originalTrack &&
+        item.originalAlbum === scrobble.originalAlbum &&
+        item.originalArtist === scrobble.originalArtist
+    );
+
+    const newScrobble = {
+      ...scrobble,
+      timestamp: Date.now()
+    };
+
+    if (existingIndex !== -1) {
+      editedScrobbles[existingIndex] = newScrobble;
+    } else {
+      editedScrobbles.push(newScrobble);
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(editedScrobbles));
+  } catch (error) {
+    console.error("Error saving edited scrobble:", error);
+  }
+};
 
 export const EditScrobblesSchema = z.object({
   originalTrack: z.string().min(1),
@@ -71,7 +113,7 @@ const BulkEdit = (props: Props) => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       // Ensure we are in the browser environment
-      const cookies = localStorage.getItem("cookies") || "";
+      const cookies = localStorage.getItem(COOKIES_KEY) || "";
       setStoredCookies(cookies);
     }
   }, []);
@@ -97,17 +139,36 @@ const BulkEdit = (props: Props) => {
       originalArtist: track.artist["#text"],
       correctedTrack: track.name,
       correctedAlbum: track.album["#text"],
-      correctedArtist: track.artist["#text"]
+      correctedArtist: track.artist["#text"],
+      cookies: storedCookies
     });
   };
 
   const onSubmit = async (data: z.infer<typeof EditScrobblesSchema>) => {
     const { cookies } = data;
-    localStorage.setItem("cookies", cookies);
-    await editScrobbles({ scrobbleInfo: data, username });
-    reset();
-    setEditDialogOpen(false);
-    toast.success("Scrobbles edited successfully", {});
+    try {
+      localStorage.setItem(COOKIES_KEY, cookies);
+      await editScrobbles({ scrobbleInfo: data, username });
+      saveEditedScrobble(data);
+
+      // Reset form with explicit empty values but preserve cookies
+      reset({
+        originalTrack: "",
+        originalAlbum: "",
+        originalArtist: "",
+        correctedTrack: "",
+        correctedAlbum: "",
+        correctedArtist: "",
+        cookies: cookies // Preserve cookies value
+      });
+
+      toast.success("Scrobbles edited successfully", {});
+    } catch (error) {
+      console.error("Error editing scrobbles:", error);
+      toast.error("Error editing scrobbles", {});
+    } finally {
+      setEditDialogOpen(false);
+    }
   };
 
   const logout = async () => {
