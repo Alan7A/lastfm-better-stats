@@ -1,5 +1,5 @@
 import { axios } from "@/axios";
-import type { Scrobble, ScrobblesResponse } from "@/types/Scrobbles.types";
+import type { ProcessedScrobble, Scrobble, ScrobblesResponse } from "@/types/Scrobbles.types";
 import type { User } from "@/types/User.types";
 import { useQueries } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -50,8 +50,8 @@ export function useGetScrobbles(user: User | undefined) {
     queries: Array.from({ length: totalPages }, (_, i) => ({
       queryKey: ["scrobbles", username, i + 1],
       queryFn: () => fetchScrobblePage(username, i + 1),
-      enabled: !!user, // Solo ejecutar cuando tengamos la data del usuario
-      staleTime: Number.POSITIVE_INFINITY, // Mantener la data en caché
+      enabled: !!user, 
+      staleTime: Number.POSITIVE_INFINITY, 
       cacheTime: 1000 * 60 * 60 // Caché por 1 hora
     }))
   });
@@ -96,56 +96,78 @@ export function useGetScrobbles(user: User | undefined) {
   };
 }
 
-export function processScrobbles(
+// {
+//   track: "Stressed Out",
+//   artist: "twenty one pilots",
+//   album: "Blurryface",
+//   albumId: "136434d5-9ddf-4c62-8dcc-021ead11fe0c",
+//   date: 1743215535000,
+// }
+export const processScrobbles = (
   tracks: ScrobblesResponse["recenttracks"]["track"]
-) {
-  return tracks.reduce(
-    (acc, track) => {
-      if (!track.date?.uts) return acc; // Skip currently playing track
-
-      const artist = track.artist["#text"];
-      const album = track.album["#text"];
-
-      // Update artist counts
-      acc.artists[artist] = (acc.artists[artist] || 0) + 1;
-
-      // Update album counts
-      if (album) {
-        acc.albums[`${artist} - ${album}`] =
-          (acc.albums[`${artist} - ${album}`] || 0) + 1;
-      }
-
-      // Update timeline data
-      const date = new Date(Number.parseInt(track.date.uts) * 1000);
-      const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-      acc.timeline[yearMonth] = (acc.timeline[yearMonth] || 0) + 1;
-
-      return acc;
-    },
-    {
-      artists: {} as Record<string, number>,
-      albums: {} as Record<string, number>,
-      timeline: {} as Record<string, number>
+) => {
+  return tracks.map(track => {
+    if (!track.date?.uts) return null; // Skip currently playing track
+    return {
+      track: track.name,
+      artist: track.artist["#text"],
+      album: track.album["#text"],
+      albumId: track.album.mbid,
+      date: Number(track.date.uts) * 1000
     }
-  );
+  }).filter(Boolean) as ProcessedScrobble[];
 }
-// const exampleResponse = {
-//   artists: {
-//     "Artist A": 5,
-//     "Artist B": 3,
-//     "Artist C": 2,
-//   },
-//   albums: {
-//     "Artist A - Album 1": 3,
-//     "Artist A - Album 2": 2,
-//     "Artist B - Album 1": 1,
-//   },
-//   timeline: {
-//     "2023-1": 4, // 4 pistas reproducidas en enero de 2023
-//     "2023-2": 3, // 3 pistas reproducidas en febrero de 2023
-//     "2023-3": 1, // 1 pista reproducida en marzo de 2023
-//   },
-// };
+
+// export function processScrobbles(
+//   tracks: ScrobblesResponse["recenttracks"]["track"]
+// ) {
+//   return tracks.reduce(
+//     (acc, track) => {
+//       if (!track.date?.uts) return acc; // Skip currently playing track
+
+//       const artist = track.artist["#text"];
+//       const album = track.album["#text"];
+
+//       // Update artist counts
+//       acc.artists[artist] = (acc.artists[artist] || 0) + 1;
+
+//       // Update album counts
+//       if (album) {
+//         acc.albums[`${artist} - ${album}`] =
+//           (acc.albums[`${artist} - ${album}`] || 0) + 1;
+//       }
+
+//       // Update timeline data
+//       const date = new Date(Number.parseInt(track.date.uts) * 1000);
+//       const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+//       acc.timeline[yearMonth] = (acc.timeline[yearMonth] || 0) + 1;
+
+//       return acc;
+//     },
+//     {
+//       artists: {} as Record<string, number>,
+//       albums: {} as Record<string, number>,
+//       timeline: {} as Record<string, number>
+//     }
+//   );
+// }
+// // const exampleResponse = {
+// //   artists: {
+// //     "Artist A": 5,
+// //     "Artist B": 3,
+// //     "Artist C": 2,
+// //   },
+// //   albums: {
+// //     "Artist A - Album 1": 3,
+// //     "Artist A - Album 2": 2,
+// //     "Artist B - Album 1": 1,
+// //   },
+// //   timeline: {
+// //     "2023-1": 4, // 4 pistas reproducidas en enero de 2023
+// //     "2023-2": 3, // 3 pistas reproducidas en febrero de 2023
+// //     "2023-3": 1, // 1 pista reproducida en marzo de 2023
+// //   },
+// // };
 
 export const deleteScrobble = async (
   scrobble: Scrobble,

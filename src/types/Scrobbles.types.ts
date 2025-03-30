@@ -53,3 +53,11 @@ export interface Progress {
   isError: boolean;
   isLoading: boolean;
 }
+
+export interface ProcessedScrobble {
+  track: string;
+  artist: string;
+  album: string;
+  albumId: string;
+  date: number;
+}

@@ -48,7 +48,7 @@ const COOKIES_KEY = "betterlastfmstats_cookies";
 
 // TODO:
 // - El reset parece que no funciona
-// - Usar barra de progreso en vez de spinner
+// - Usar barra de progreso en vez de spinner o mostrar progreso (ej. 1/7 edits)
 // - Mejorar explicación sobre cómo obtener cookies
 // - Tal vez mejorar el diseño general
 
