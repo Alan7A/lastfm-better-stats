@@ -84,7 +84,7 @@ const OverviewTop: FC<OverviewTopProps> = ({
             <CardContent className="flex flex-col gap-4">
               <ThreeImages items={items} shape={imageShape} />
               <div className="flex flex-col gap-2">
-                {items?.map((item, i) => {
+                {items.map((item, i) => {
                   const { name, image, playcount, url } = item;
                   return (
                     <div

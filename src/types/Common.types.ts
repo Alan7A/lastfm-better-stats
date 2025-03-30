@@ -6,6 +6,8 @@ export type Period =
   | "6month"
   | "12month";
 
+export type Limit = "10" | "25" | "50" | "100" | "250" | "500" | "1000";
+
 export interface LastFmImage {
   size: LastFmImageSize;
   "#text": string;

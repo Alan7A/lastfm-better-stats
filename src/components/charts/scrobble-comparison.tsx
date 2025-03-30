@@ -2,16 +2,6 @@
 
 import { useGetScrobbles } from "@/api/scrobbles";
 import { useGetUser } from "@/api/user";
-import type { ProcessedScrobble } from "@/types/Scrobbles.types";
-import {
-  subDays,
-  startOfWeek,
-  endOfWeek,
-  isWithinInterval,
-  getDay,
-  format
-} from "date-fns";
-import { useParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -28,6 +18,16 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from "@/components/ui/chart";
+import type { ProcessedScrobble } from "@/types/Scrobbles.types";
+import {
+  endOfWeek,
+  format,
+  getDay,
+  isWithinInterval,
+  startOfWeek,
+  subDays
+} from "date-fns";
+import { useParams } from "next/navigation";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 const chartConfig = {
@@ -44,7 +44,7 @@ const chartConfig = {
 const now = new Date();
 
 /**
- * TODO: 
+ * TODO:
  * - Agregar flechar para cambiar de periodos
  * - Agregar select para cambiar de periodos (semana, mes, 6 meses,  año)
  * - Mejorar diseño del chart
@@ -141,9 +141,14 @@ const ScrobbleComparison = () => {
   const { username } = useParams<{ username: string }>();
   const { data: user } = useGetUser(username);
   const { data } = useGetScrobbles(user);
-  const { chartData, changeText, startOfThisWeek, endOfThisWeek, totalThisWeek } =
-    transformScrobbles(data);
-  console.log({chartData})
+  const {
+    chartData,
+    changeText,
+    startOfThisWeek,
+    endOfThisWeek,
+    totalThisWeek
+  } = transformScrobbles(data);
+  console.log({ chartData });
 
   return (
     <Card>
@@ -193,10 +198,10 @@ const ScrobbleComparison = () => {
         </ChartContainer>
       </CardContent>
       <CardFooter>
-            <div className="flex flex-1 items-center gap-2 font-medium leading-none justify-between">
-              <p className="text-lg">{totalThisWeek} scrobbles</p>
-              <p>{changeText}</p>
-            </div>
+        <div className="flex flex-1 items-center gap-2 font-medium leading-none justify-between">
+          <p className="text-lg">{totalThisWeek} scrobbles</p>
+          <p>{changeText}</p>
+        </div>
       </CardFooter>
     </Card>
   );

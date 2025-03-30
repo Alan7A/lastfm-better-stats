@@ -1,5 +1,9 @@
 import { axios } from "@/axios";
-import type { ProcessedScrobble, Scrobble, ScrobblesResponse } from "@/types/Scrobbles.types";
+import type {
+  ProcessedScrobble,
+  Scrobble,
+  ScrobblesResponse
+} from "@/types/Scrobbles.types";
 import type { User } from "@/types/User.types";
 import { useQueries } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -50,8 +54,8 @@ export function useGetScrobbles(user: User | undefined) {
     queries: Array.from({ length: totalPages }, (_, i) => ({
       queryKey: ["scrobbles", username, i + 1],
       queryFn: () => fetchScrobblePage(username, i + 1),
-      enabled: !!user, 
-      staleTime: Number.POSITIVE_INFINITY, 
+      enabled: !!user,
+      staleTime: Number.POSITIVE_INFINITY,
       cacheTime: 1000 * 60 * 60 // Caché por 1 hora
     }))
   });
@@ -106,17 +110,19 @@ export function useGetScrobbles(user: User | undefined) {
 export const processScrobbles = (
   tracks: ScrobblesResponse["recenttracks"]["track"]
 ) => {
-  return tracks.map(track => {
-    if (!track.date?.uts) return null; // Skip currently playing track
-    return {
-      track: track.name,
-      artist: track.artist["#text"],
-      album: track.album["#text"],
-      albumId: track.album.mbid,
-      date: Number(track.date.uts) * 1000
-    }
-  }).filter(Boolean) as ProcessedScrobble[];
-}
+  return tracks
+    .map((track) => {
+      if (!track.date?.uts) return null; // Skip currently playing track
+      return {
+        track: track.name,
+        artist: track.artist["#text"],
+        album: track.album["#text"],
+        albumId: track.album.mbid,
+        date: Number(track.date.uts) * 1000
+      };
+    })
+    .filter(Boolean) as ProcessedScrobble[];
+};
 
 // export function processScrobbles(
 //   tracks: ScrobblesResponse["recenttracks"]["track"]

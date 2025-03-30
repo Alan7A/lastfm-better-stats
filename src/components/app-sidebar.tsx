@@ -34,7 +34,10 @@ const AppSidebar = () => {
   const { username } = useParams<{ username: string }>();
   return (
     <Sidebar variant="floating" collapsible="icon">
-      <SidebarHeader className="p-3 pb-0">
+      <SidebarHeader className="p-3 pb-0 flex-row items-center gap-2 justify-between">
+        <p className="text-xl font-semibold group-data-[collapsible=icon]:hidden">
+          {username}
+        </p>
         <SidebarTrigger className="ml-auto" />
       </SidebarHeader>
       <SidebarContent className="p-2">
@@ -46,7 +49,7 @@ const AppSidebar = () => {
               <SidebarMenuItem key={title}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={title}>
                   <Link href={href} className="py-6">
-                    <div className="flex gap-6 text-lg items-center [collapsible=icon]:pl-6">
+                    <div className="flex gap-6 text-lg items-center">
                       <item.icon className="h-5 w-5" />
                       <span>{title}</span>
                     </div>

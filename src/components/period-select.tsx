@@ -10,10 +10,11 @@ import {
 interface Props {
   period: Period | undefined;
   setPeriod: (period: Period) => void;
+  enableAllTime?: boolean;
 }
 
 const PeriodSelect = (props: Props) => {
-  const { period, setPeriod } = props;
+  const { period, setPeriod, enableAllTime } = props;
   return (
     <Select
       value={period}
@@ -28,6 +29,7 @@ const PeriodSelect = (props: Props) => {
         <SelectItem value="3month">3 month</SelectItem>
         <SelectItem value="6month">6 month</SelectItem>
         <SelectItem value="12month">12 month</SelectItem>
+        {enableAllTime && <SelectItem value="overall">All time</SelectItem>}
       </SelectContent>
     </Select>
   );
