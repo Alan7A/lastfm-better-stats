@@ -16,7 +16,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { EditScrobblesDialog } from "./edit-scrobbles-dialog";
-import RecentTracksDialog from "./tools/recent-tracks-dialog";
+import RecentTracksDialog, {
+  type EditedScrobble
+} from "./tools/recent-tracks-dialog";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -38,9 +40,6 @@ import {
 interface Props {
   isAuthenticated: boolean;
   username: string;
-}
-interface EditedScrobble extends z.infer<typeof EditScrobblesSchema> {
-  timestamp: number;
 }
 
 const STORAGE_KEY = "betterlastfmstats_edited_scrobbles";
@@ -131,24 +130,38 @@ const BulkEdit = (props: Props) => {
     setValue("cookies", storedCookies);
   }, [storedCookies, setValue]);
 
-  const handleTrackSelect = (track: Scrobble) => {
+  const handleTrackSelect = (track: Scrobble | EditedScrobble) => {
     setTracksDialogOpen(false);
-    reset({
-      originalTrack: track.name,
-      originalAlbum: track.album["#text"],
-      originalArtist: track.artist["#text"],
-      correctedTrack: track.name,
-      correctedAlbum: track.album["#text"],
-      correctedArtist: track.artist["#text"],
-      cookies: storedCookies
-    });
+    if ("timestamp" in track) {
+      // Recent edit
+      reset({
+        originalTrack: track.originalTrack,
+        originalAlbum: track.originalAlbum,
+        originalArtist: track.originalArtist,
+        correctedTrack: track.correctedTrack,
+        correctedAlbum: track.correctedAlbum,
+        correctedArtist: track.correctedArtist,
+        cookies: storedCookies
+      });
+    } else {
+      // Recent track
+      reset({
+        originalTrack: track.name,
+        originalAlbum: track.album["#text"],
+        originalArtist: track.artist["#text"],
+        correctedTrack: track.name,
+        correctedAlbum: track.album["#text"],
+        correctedArtist: track.artist["#text"],
+        cookies: storedCookies
+      });
+    }
   };
 
   const onSubmit = async (data: z.infer<typeof EditScrobblesSchema>) => {
     const { cookies } = data;
     try {
       localStorage.setItem(COOKIES_KEY, cookies);
-      await editScrobbles({ scrobbleInfo: data, username });
+      const scrobbled = await editScrobbles({ scrobbleInfo: data, username });
       saveEditedScrobble(data);
 
       // Reset form with explicit empty values but preserve cookies
@@ -162,7 +175,7 @@ const BulkEdit = (props: Props) => {
         cookies: cookies // Preserve cookies value
       });
 
-      toast.success("Scrobbles edited successfully", {});
+      toast.success(`${scrobbled} scrobbles edited successfully`, {});
     } catch (error) {
       console.error("Error editing scrobbles:", error);
       toast.error("Error editing scrobbles", {});

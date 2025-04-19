@@ -19,10 +19,10 @@ import { useEffect, useState } from "react";
 interface Props {
   isDialogOpen: boolean;
   setIsDialogOpen: (isDialogOpen: boolean) => void;
-  handleTrackSelect: (track: Scrobble) => void;
+  handleTrackSelect: (track: Scrobble | EditedScrobble) => void;
 }
 
-interface EditedScrobble {
+export interface EditedScrobble {
   originalTrack: string;
   originalAlbum: string;
   originalArtist: string;
@@ -49,7 +49,7 @@ const formatDate = (timestamp: number) => {
   return format(date, "MMM d, h:mm a");
 };
 
-const getEditedScrobbles = (): EditedScrobble[] => {
+const getRecentEdits = (): EditedScrobble[] => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored
@@ -65,7 +65,7 @@ const getEditedScrobbles = (): EditedScrobble[] => {
 
 const deleteEdit = (edit: EditedScrobble) => {
   try {
-    const edits = getEditedScrobbles();
+    const edits = getRecentEdits();
     const filteredEdits = edits.filter(
       (e) =>
         e.originalTrack !== edit.originalTrack ||
@@ -83,17 +83,17 @@ const deleteEdit = (edit: EditedScrobble) => {
 const RecentTracksDialog = (props: Props) => {
   const { handleTrackSelect, isDialogOpen, setIsDialogOpen } = props;
   const { data: recentTracks, isLoading } = useGetRecentTracks({});
-  const [editedScrobbles, setEditedScrobbles] = useState<EditedScrobble[]>([]);
+  const [recentEdits, setRecentEdits] = useState<EditedScrobble[]>([]);
 
   useEffect(() => {
     if (isDialogOpen) {
-      setEditedScrobbles(getEditedScrobbles());
+      setRecentEdits(getRecentEdits());
     }
   }, [isDialogOpen]);
 
   const handleDeleteEdit = (edit: EditedScrobble) => {
     const updatedEdits = deleteEdit(edit);
-    setEditedScrobbles(updatedEdits);
+    setRecentEdits(updatedEdits);
   };
 
   return (
@@ -104,16 +104,19 @@ const RecentTracksDialog = (props: Props) => {
           Select from recent tracks
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh]">
+      <DialogContent
+        className="sm:max-w-[600px] max-h-[80vh]"
+        aria-description="Select from recent tracks"
+      >
         <DialogHeader>
           <DialogTitle>Recent scrobbles</DialogTitle>
         </DialogHeader>
         <Tabs defaultValue="recent">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="recent">Recent Tracks</TabsTrigger>
+            <TabsTrigger value="tracks">Recent Tracks</TabsTrigger>
             <TabsTrigger value="edits">Recent Edits</TabsTrigger>
           </TabsList>
-          <TabsContent value="recent">
+          <TabsContent value="tracks">
             <ScrollArea className="h-[500px] w-full rounded border p-2">
               {isLoading ? (
                 <div className="flex items-center justify-center h-64 min-h-[920px]">
@@ -164,14 +167,17 @@ const RecentTracksDialog = (props: Props) => {
           </TabsContent>
           <TabsContent value="edits">
             <ScrollArea className="h-[500px] w-full rounded border p-2">
-              {editedScrobbles.length > 0 ? (
+              {recentEdits.length > 0 ? (
                 <>
-                  {editedScrobbles.map((edit, index) => (
+                  {recentEdits.map((edit, index) => (
                     <div
                       key={`${edit.originalTrack}-${index}`}
                       className="flex items-center justify-between gap-4 p-2 rounded hover:bg-primary/10 duration-300"
                     >
-                      <div className="flex items-center flex-1 space-x-4 cursor-pointer">
+                      <div
+                        className="flex items-center flex-1 space-x-4 cursor-pointer"
+                        onClick={() => handleTrackSelect(edit)}
+                      >
                         <div>
                           <h3 className="font-semibold">
                             {edit.originalTrack}
@@ -180,7 +186,7 @@ const RecentTracksDialog = (props: Props) => {
                             {edit.originalArtist}
                           </p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            → {edit.correctedTrack} - {edit.correctedArtist}
+                            ➜ {edit.correctedTrack} - {edit.correctedArtist}
                           </p>
                         </div>
                       </div>

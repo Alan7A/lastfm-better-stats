@@ -87,6 +87,11 @@ export const editScrobbles = async (params: EditScrobblesParams) => {
   const scrobbles = await findScrobbles(params);
 
   try {
+    if (scrobbles.length === 0) {
+      console.log("No scrobbles found");
+      return 0;
+    }
+
     await deleteScrobbles({ scrobbles, username, cookies });
     const updatedScrobbles = scrobbles.map((scrobble) => ({
       artist: correctedArtist,
@@ -98,6 +103,7 @@ export const editScrobbles = async (params: EditScrobblesParams) => {
     }));
     await createScrobbles(updatedScrobbles);
     console.log(`Edited ${scrobbles.length} scrobbles`);
+    return scrobbles.length;
   } catch (error) {
     console.error("Failed to delete scrobbles:", error);
     throw error;

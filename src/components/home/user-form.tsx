@@ -20,8 +20,9 @@ const UserForm = () => {
         Type your Last.fm username
       </p>
       <div className="grid gap-2">
-        <Label htmlFor="email">Username</Label>
+        <Label htmlFor="username">Username</Label>
         <Input
+          name="username"
           required
           value={username}
           onChange={(e) => setUsername(e.target.value)}
