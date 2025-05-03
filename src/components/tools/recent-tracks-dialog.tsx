@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Scrobble } from "@/types/Scrobbles.types";
 import { format, formatDistanceToNow, isYesterday } from "date-fns";
-import { Clock, LoaderCircle, TextSearch, Trash2 } from "lucide-react";
+import { Clock, LoaderCircle, Pencil, TextSearch, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -20,6 +20,8 @@ interface Props {
   isDialogOpen: boolean;
   setIsDialogOpen: (isDialogOpen: boolean) => void;
   handleTrackSelect: (track: Scrobble | EditedScrobble) => void;
+  setEditAllRecent: (editAllRecent: boolean) => void;
+  setEditDialogOpen: (editDialogOpen: boolean) => void;
 }
 
 export interface EditedScrobble {
@@ -81,7 +83,13 @@ const deleteEdit = (edit: EditedScrobble) => {
 };
 
 const RecentTracksDialog = (props: Props) => {
-  const { handleTrackSelect, isDialogOpen, setIsDialogOpen } = props;
+  const {
+    handleTrackSelect,
+    isDialogOpen,
+    setIsDialogOpen,
+    setEditAllRecent,
+    setEditDialogOpen
+  } = props;
   const { data: recentTracks, isLoading } = useGetRecentTracks({});
   const [recentEdits, setRecentEdits] = useState<EditedScrobble[]>([]);
 
@@ -94,6 +102,12 @@ const RecentTracksDialog = (props: Props) => {
   const handleDeleteEdit = (edit: EditedScrobble) => {
     const updatedEdits = deleteEdit(edit);
     setRecentEdits(updatedEdits);
+  };
+
+  const handleEditAllRecent = () => {
+    setEditAllRecent(true);
+    setEditDialogOpen(true);
+    setIsDialogOpen(false);
   };
 
   return (
@@ -117,7 +131,7 @@ const RecentTracksDialog = (props: Props) => {
             <TabsTrigger value="edits">Recent Edits</TabsTrigger>
           </TabsList>
           <TabsContent value="tracks">
-            <ScrollArea className="h-[500px] w-full rounded border p-2">
+            <ScrollArea className="h-[549px] w-full rounded border p-2">
               {isLoading ? (
                 <div className="flex items-center justify-center h-64 min-h-[920px]">
                   <LoaderCircle className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -165,7 +179,7 @@ const RecentTracksDialog = (props: Props) => {
               )}
             </ScrollArea>
           </TabsContent>
-          <TabsContent value="edits">
+          <TabsContent value="edits" className="flex flex-col gap-4">
             <ScrollArea className="h-[500px] w-full rounded border p-2">
               {recentEdits.length > 0 ? (
                 <>
@@ -216,6 +230,14 @@ const RecentTracksDialog = (props: Props) => {
                 </div>
               )}
             </ScrollArea>
+            <Button
+              className="self-end"
+              type="button"
+              onClick={handleEditAllRecent}
+            >
+              <Pencil />
+              Edit all recent
+            </Button>
           </TabsContent>
         </Tabs>
       </DialogContent>

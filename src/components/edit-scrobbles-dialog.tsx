@@ -27,6 +27,8 @@ import { Textarea } from "./ui/textarea";
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
+  editAllRecent: boolean;
+  setEditAllRecent: (editAllRecent: boolean) => void;
   isPending: boolean;
   username: string;
 }
@@ -34,7 +36,14 @@ interface Props {
 type status = "idle" | "creating" | "success" | "error";
 
 export function EditScrobblesDialog(props: Props) {
-  const { open, setOpen, isPending, username } = props;
+  const {
+    open,
+    setOpen,
+    isPending,
+    username,
+    editAllRecent,
+    setEditAllRecent
+  } = props;
   const { control } = useFormContext<any>();
   const [status, setStatus] = useState<status>("idle");
 
@@ -61,6 +70,13 @@ export function EditScrobblesDialog(props: Props) {
       console.error("Error creating scrobble:", error);
       setStatus("error");
     }
+  };
+
+  const handleTriggerClick = () => {
+    if (editAllRecent) {
+      setEditAllRecent(false);
+    }
+    setOpen(true);
   };
 
   const ScrobbleButton = () => {
@@ -111,14 +127,20 @@ export function EditScrobblesDialog(props: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="button" className="self-end min-w-[144px]">
+        <Button
+          type="button"
+          className="self-end min-w-[144px]"
+          onClick={handleTriggerClick}
+        >
           <Pencil />
           Edit scrobbles
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Scrobbles</DialogTitle>
+          <DialogTitle>
+            Edit Scrobbles {editAllRecent ? "(all recent)" : ""}
+          </DialogTitle>
           <div className="text-sm text-muted-foreground">
             <p>
               You need to manually delete a scrobble from your Last.fm account,
@@ -145,7 +167,11 @@ export function EditScrobblesDialog(props: Props) {
             <FormItem>
               <FormLabel>Cookies</FormLabel>
               <FormControl>
-                <Textarea placeholder="Paste cookies here" {...field} />
+                <Textarea
+                  placeholder="Paste cookies here"
+                  {...field}
+                  rows={10}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

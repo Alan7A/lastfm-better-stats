@@ -103,6 +103,7 @@ const BulkEdit = (props: Props) => {
   const { push } = useRouter();
   const [tracksDialogOpen, setTracksDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editAllRecent, setEditAllRecent] = useState(false);
   const { mutateAsync: editScrobbles, isPending } = useEditScrobbles();
 
   // State to hold the cookies value, initialized to an empty string
@@ -161,8 +162,29 @@ const BulkEdit = (props: Props) => {
     const { cookies } = data;
     try {
       localStorage.setItem(COOKIES_KEY, cookies);
-      const scrobbled = await editScrobbles({ scrobbleInfo: data, username });
-      saveEditedScrobble(data);
+
+      if (editAllRecent) {
+        // Get all edited scrobbles from local storage
+        const editedScrobbles = getEditedScrobbles();
+        let totalScrobbled = 0;
+
+        // Edit each scrobble
+        for (const scrobble of editedScrobbles) {
+          const scrobbleInfo = {
+            ...scrobble,
+            cookies
+          };
+          const count = await editScrobbles({ scrobbleInfo, username });
+          totalScrobbled += count;
+        }
+
+        toast.success(`${totalScrobbled} scrobbles edited successfully`, {});
+      } else {
+        // Edit single scrobble
+        const scrobbled = await editScrobbles({ scrobbleInfo: data, username });
+        saveEditedScrobble(data);
+        toast.success(`${scrobbled} scrobbles edited successfully`, {});
+      }
 
       // Reset form with explicit empty values but preserve cookies
       reset({
@@ -174,13 +196,12 @@ const BulkEdit = (props: Props) => {
         correctedArtist: "",
         cookies: cookies // Preserve cookies value
       });
-
-      toast.success(`${scrobbled} scrobbles edited successfully`, {});
     } catch (error) {
       console.error("Error editing scrobbles:", error);
       toast.error("Error editing scrobbles", {});
     } finally {
       setEditDialogOpen(false);
+      setEditAllRecent(false);
     }
   };
 
@@ -253,7 +274,15 @@ const BulkEdit = (props: Props) => {
           <Form {...form}>
             <form
               id="edit-scrobbles-form"
-              onSubmit={handleSubmit(onSubmit)}
+              // if editAllRecent is true, we skip form validation and submit directly
+              onSubmit={
+                editAllRecent
+                  ? (e) => {
+                      e.preventDefault();
+                      onSubmit(form.getValues());
+                    }
+                  : handleSubmit(onSubmit)
+              }
               className="grid grid-cols-2 gap-8"
             >
               <div className="flex flex-col gap-2 ">
@@ -301,6 +330,8 @@ const BulkEdit = (props: Props) => {
                   handleTrackSelect={handleTrackSelect}
                   isDialogOpen={tracksDialogOpen}
                   setIsDialogOpen={setTracksDialogOpen}
+                  setEditAllRecent={setEditAllRecent}
+                  setEditDialogOpen={setEditDialogOpen}
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -349,6 +380,8 @@ const BulkEdit = (props: Props) => {
                   setOpen={setEditDialogOpen}
                   isPending={isPending}
                   username={username}
+                  editAllRecent={editAllRecent}
+                  setEditAllRecent={setEditAllRecent}
                 />
               </div>
             </form>
