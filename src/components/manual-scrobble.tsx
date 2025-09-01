@@ -162,7 +162,7 @@ const ManualScrobble = (props: Props) => {
               name="timestamp"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Timestamp (optional)</FormLabel>
+                  <FormLabel>Timestamp (empty for current time)</FormLabel>
                   <FormControl>
                     <Input
                       type="datetime-local"

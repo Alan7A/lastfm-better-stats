@@ -1,6 +1,7 @@
 import BulkEdit from "@/components/bulk-edit";
 import ManualScrobble from "@/components/manual-scrobble";
 import ScrobbleAlbum from "@/components/scrobble-album";
+import LogoutButton from "@/components/logout-button";
 import { cookies } from "next/headers";
 
 const Page = async () => {
@@ -28,7 +29,10 @@ const Page = async () => {
 
   return (
     <div className="p-3 space-y-4 max-w-screen-lg mx-auto">
+      <div className="flex items-center justify-between">
       <h2 className="text-3xl font-bold">Tools</h2>
+      {isAuthenticated && username && <LogoutButton username={username} />}
+      </div>
       <BulkEdit isAuthenticated={isAuthenticated} username={username ?? ""} />
       <ManualScrobble
         isAuthenticated={isAuthenticated}

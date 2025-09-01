@@ -205,16 +205,7 @@ const BulkEdit = (props: Props) => {
     }
   };
 
-  const logout = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST"
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  };
+  
 
   const unauthenticatedNode = (
     <div className="flex flex-col gap-4 items-center">
@@ -249,21 +240,6 @@ const BulkEdit = (props: Props) => {
               </Tooltip>
             </TooltipProvider>
           </div>
-          {isAuthenticated && (
-            <div className="flex gap-2 text-sm text-muted-foreground font-normal items-center">
-              <p>
-                Logged in as <b>{username}</b>
-              </p>
-              <span>-</span>
-              <Button
-                className="text-foreground p-0"
-                variant="link"
-                onClick={logout}
-              >
-                Logout
-              </Button>
-            </div>
-          )}
         </CardTitle>
         <CardDescription>
           Fix wrong scrobbles with the bulk edit tool

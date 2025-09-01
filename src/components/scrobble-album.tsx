@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { AlbumTrack, SearchAlbum } from "@/types/Albums.types";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Clock, Music, PlayCircle, Search } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -49,6 +50,7 @@ const ScrobbleAlbum = (props: Props) => {
   const [selectedAlbum, setSelectedAlbum] = useState<SearchAlbum | null>(null);
   const [selectedTracks, setSelectedTracks] = useState<Set<string>>(new Set());
   const [isScrobbling, setIsScrobbling] = useState(false);
+  const [parent] = useAutoAnimate();
 
   const searchForm = useForm<SearchFormData>({
     resolver: zodResolver(searchFormSchema),
@@ -258,8 +260,7 @@ const ScrobbleAlbum = (props: Props) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Music className="h-5 w-5" />
-            Scrobble Album
+            Scrobble album
           </CardTitle>
           <CardDescription>
             Search and scrobble entire albums or individual tracks
@@ -278,14 +279,13 @@ const ScrobbleAlbum = (props: Props) => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Music className="h-5 w-5" />
-          Scrobble Album
+          Scrobble album
         </CardTitle>
         <CardDescription>
           Search and scrobble entire albums or individual tracks
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6" ref={parent}>
         {!selectedAlbum ? (
           <>
             {/* Search Form */}
@@ -424,7 +424,7 @@ const ScrobbleAlbum = (props: Props) => {
                 name="timestamp"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Scrobble Timestamp (optional)</FormLabel>
+                    <FormLabel>Scrobble Timestamp (empty for current time)</FormLabel>
                     <FormControl>
                       <Input
                         type="datetime-local"
