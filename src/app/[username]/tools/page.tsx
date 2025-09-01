@@ -1,5 +1,6 @@
 import BulkEdit from "@/components/bulk-edit";
 import ManualScrobble from "@/components/manual-scrobble";
+import ScrobbleAlbum from "@/components/scrobble-album";
 import { cookies } from "next/headers";
 
 const Page = async () => {
@@ -29,7 +30,14 @@ const Page = async () => {
     <div className="p-3 space-y-4 max-w-screen-lg mx-auto">
       <h2 className="text-3xl font-bold">Tools</h2>
       <BulkEdit isAuthenticated={isAuthenticated} username={username ?? ""} />
-      <ManualScrobble isAuthenticated={isAuthenticated} username={username ?? ""} />
+      <ManualScrobble
+        isAuthenticated={isAuthenticated}
+        username={username ?? ""}
+      />
+      <ScrobbleAlbum
+        isAuthenticated={isAuthenticated}
+        username={username ?? ""}
+      />
     </div>
   );
 };

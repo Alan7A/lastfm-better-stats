@@ -94,7 +94,7 @@ async function scrobbleTrack(params: ScrobbleTrackParams): Promise<any> {
 
 function createApiSignature(params: Record<string, string>): string {
   const LASTFM_API_SECRET = process.env.LASTFM_API_SECRET as string;
-  
+
   // Sort parameters alphabetically
   const sortedParams = Object.keys(params)
     .sort()

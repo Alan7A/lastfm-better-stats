@@ -136,7 +136,10 @@ export function EditScrobblesDialog(props: Props) {
           Edit scrobbles
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]" aria-description="Edit scrobbles">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        aria-description="Edit scrobbles"
+      >
         <DialogHeader>
           <DialogTitle>
             Edit Scrobbles {editAllRecent ? "(all recent)" : ""}

@@ -1,32 +1,32 @@
 "use client";
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 interface Props {
-    isAuthenticated: boolean;
-    username: string;
-  }
+  isAuthenticated: boolean;
+  username: string;
+}
 
 const formSchema = z.object({
   artist: z.string().min(1, { message: "Artist name is required" }),
@@ -61,27 +61,31 @@ const ManualScrobble = (props: Props) => {
       const payload = {
         artist: data.artist,
         track: data.track,
-        timestamp: data.timestamp ? Math.floor(new Date(data.timestamp).getTime() / 1000) : undefined
+        timestamp: data.timestamp
+          ? Math.floor(new Date(data.timestamp).getTime() / 1000)
+          : undefined
       };
 
-      const response = await fetch('/api/manual-scrobble', {
-        method: 'POST',
+      const response = await fetch("/api/manual-scrobble", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to scrobble track');
+        throw new Error(result.error || "Failed to scrobble track");
       }
 
-      toast.success('Track scrobbled successfully!');
+      toast.success("Track scrobbled successfully!");
       form.reset();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to scrobble track');
+      toast.error(
+        error instanceof Error ? error.message : "Failed to scrobble track"
+      );
     } finally {
       setIsSubmitting(false);
       form.reset();
@@ -95,9 +99,7 @@ const ManualScrobble = (props: Props) => {
           <CardTitle className="flex justify-between gap-2">
             <p>Scrobble manually</p>
           </CardTitle>
-          <CardDescription>
-            Scrobble a track manually
-          </CardDescription>
+          <CardDescription>Scrobble a track manually</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-muted-foreground">
@@ -114,9 +116,7 @@ const ManualScrobble = (props: Props) => {
         <CardTitle className="flex justify-between gap-2">
           <p>Scrobble manually</p>
         </CardTitle>
-        <CardDescription>
-          Scrobble a track manually
-        </CardDescription>
+        <CardDescription>Scrobble a track manually</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -128,8 +128,8 @@ const ManualScrobble = (props: Props) => {
                 <FormItem>
                   <FormLabel>Artist Name *</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Enter artist name" 
+                    <Input
+                      placeholder="Enter artist name"
                       {...field}
                       disabled={isSubmitting}
                     />
@@ -138,7 +138,7 @@ const ManualScrobble = (props: Props) => {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="track"
@@ -146,8 +146,8 @@ const ManualScrobble = (props: Props) => {
                 <FormItem>
                   <FormLabel>Track Name *</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Enter track name" 
+                    <Input
+                      placeholder="Enter track name"
                       {...field}
                       disabled={isSubmitting}
                     />
@@ -156,7 +156,7 @@ const ManualScrobble = (props: Props) => {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="timestamp"
@@ -164,7 +164,7 @@ const ManualScrobble = (props: Props) => {
                 <FormItem>
                   <FormLabel>Timestamp (optional)</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="datetime-local"
                       placeholder="Leave empty for current time"
                       {...field}
@@ -175,12 +175,8 @@ const ManualScrobble = (props: Props) => {
                 </FormItem>
               )}
             />
-            
-            <Button 
-              type="submit" 
-              disabled={isSubmitting}
-              className="w-full"
-            >
+
+            <Button type="submit" disabled={isSubmitting} className="w-full">
               {isSubmitting ? "Scrobbling..." : "Scrobble Track"}
             </Button>
           </form>
