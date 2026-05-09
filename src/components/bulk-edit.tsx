@@ -90,10 +90,10 @@ const saveEditedScrobble = (scrobble: Omit<EditedScrobble, "timestamp">) => {
 
 export const EditScrobblesSchema = z.object({
   originalTrack: z.string().min(1),
-  originalAlbum: z.string().min(1),
+  originalAlbum: z.string(),
   originalArtist: z.string().min(1),
   correctedTrack: z.string().min(1),
-  correctedAlbum: z.string().min(1),
+  correctedAlbum: z.string(),
   correctedArtist: z.string().min(1),
   cookies: z.string().min(1, "Last.fm cookies are required")
 });
@@ -204,8 +204,6 @@ const BulkEdit = (props: Props) => {
       setEditAllRecent(false);
     }
   };
-
-  
 
   const unauthenticatedNode = (
     <div className="flex flex-col gap-4 items-center">
