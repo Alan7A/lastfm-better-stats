@@ -2,7 +2,7 @@
 import { useGetTopAlbums } from "@/api/top-albums";
 import { useGetTopArtists } from "@/api/top-artists";
 import { useGetTopTracks } from "@/api/top-tracks";
-import ScrobbleComparison from "@/components/charts/scrobble-comparison";
+import { OverviewScrobbleHighlights } from "@/components/charts/scrobble-analytics";
 import UserStats from "@/components/charts/user-stats";
 import OverviewTop from "@/components/overview-top";
 import { LoaderCircle } from "lucide-react";
@@ -43,7 +43,7 @@ const OverviewPage = () => {
         />
       </Suspense>
       <Suspense fallback={Loading}>
-        <ScrobbleComparison />
+        <OverviewScrobbleHighlights />
       </Suspense>
     </div>
   );

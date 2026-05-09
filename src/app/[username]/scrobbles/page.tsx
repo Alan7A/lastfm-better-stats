@@ -1,10 +1,9 @@
-import ScrobbleComparison from "@/components/charts/scrobble-comparison";
+import ScrobbleAnalytics from "@/components/charts/scrobble-analytics";
 
 const ScrobblesPage = () => {
   return (
-    <div className="max-w-screen-lg mx-auto">
-      <h2 className="text-3xl font-bold mb-4">Scrobbles</h2>
-      <ScrobbleComparison />
+    <div className="mx-auto max-w-screen-xl">
+      <ScrobbleAnalytics />
     </div>
   );
 };
